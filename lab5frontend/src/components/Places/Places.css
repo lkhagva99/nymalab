@@ -1,0 +1,139 @@
+.places-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.places-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.places-header h1 {
+  color: #333;
+  margin: 0;
+}
+
+.create-place-button {
+  background-color: #0066cc;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.create-place-button:hover {
+  background-color: #0052a3;
+}
+
+.places-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.place-item {
+  display: flex;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s;
+}
+
+.place-item:hover {
+  transform: translateY(-4px);
+}
+
+.place-image {
+  width: 300px;
+  min-width: 300px;
+  height: 200px;
+  overflow: hidden;
+}
+
+.place-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.place-info {
+  padding: 1.5rem;
+  flex-grow: 1;
+}
+
+.place-info h2 {
+  margin: 0 0 0.5rem;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.place-location {
+  color: #666;
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+}
+
+.place-description {
+  color: #444;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 1rem 0;
+}
+
+.place-metadata {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+
+.no-places {
+  text-align: center;
+  color: #666;
+  font-size: 1.1rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: #666;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.error-message {
+  text-align: center;
+  padding: 1rem;
+  background-color: #fff3f3;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .place-item {
+    flex-direction: column;
+  }
+
+  .place-image {
+    width: 100%;
+    height: 200px;
+  }
+
+  .place-info {
+    padding: 1rem;
+  }
+} 
