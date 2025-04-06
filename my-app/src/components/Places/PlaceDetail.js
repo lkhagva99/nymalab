@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { toast } from 'react-toastify';
 import './PlaceDetail.css';
 
 const PlaceDetail = () => {
@@ -11,6 +12,33 @@ const PlaceDetail = () => {
   // Get place from localStorage
   const places = JSON.parse(localStorage.getItem('places') || '[]');
   const place = places.find(p => p.id === id);
+
+  const handleEditClick = (e) => {
+    if (!user) {
+      e.preventDefault();
+      navigate('/login', { state: { from: `/places/${id}/edit` } });
+      return;
+    }
+
+    if (place.createdBy !== user.username) {
+      e.preventDefault();
+      toast.error('Та зөвхөн өөрийн нэмсэн газрыг засах боломжтой');
+      navigate(`/places/${id}`);
+    }
+  };
+
+  const handleDelete = () => {
+    if (!user) {
+      navigate('/login', { state: { from: `/places/${id}` } });
+      return;
+    }
+
+    if (window.confirm('Та энэ газрыг устгахдаа итгэлтэй байна уу?')) {
+      const updatedPlaces = places.filter(p => p.id !== id);
+      localStorage.setItem('places', JSON.stringify(updatedPlaces));
+      navigate('/places');
+    }
+  };
 
   if (!place) {
     return (
@@ -23,24 +51,22 @@ const PlaceDetail = () => {
     );
   }
 
-  const handleDelete = () => {
-    if (window.confirm('Та энэ газрыг устгахдаа итгэлтэй байна уу?')) {
-      const updatedPlaces = places.filter(p => p.id !== id);
-      localStorage.setItem('places', JSON.stringify(updatedPlaces));
-      navigate('/places');
-    }
-  };
-
   return (
     <div className="place-detail-container">
       <div className="place-detail-header">
         <Link to="/places" className="back-button">← Газрын жагсаалт руу буцах</Link>
-        {place.createdBy === user.username && (
-          <div className="place-actions">
-            <Link to={`/places/${id}/edit`} className="edit-button">Засах</Link>
+        <div className="place-actions">
+          <Link 
+            to={`/places/${id}/edit`} 
+            className="edit-button"
+            onClick={handleEditClick}
+          >
+            Засах
+          </Link>
+          {user && place.createdBy === user.username && (
             <button onClick={handleDelete} className="delete-button">Устгах</button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       <div className="place-detail-content">

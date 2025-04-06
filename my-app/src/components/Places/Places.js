@@ -1,18 +1,32 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { toast } from 'react-toastify';
 import './Places.css';
 
 const Places = () => {
   // Get places from localStorage
   const places = JSON.parse(localStorage.getItem('places') || '[]');
   const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleCreateClick = (e) => {
+    if (!user) {
+      e.preventDefault();
+      toast.error('Шинэ газар нэмэхэд нэвтэрсэн байх шаардлагатай');
+      navigate('/login', { state: { from: '/places/new' } });
+    }
+  };
 
   return (
     <div className="places-container">
       <div className="places-header">
         <h1>Газрууд</h1>
-        <Link to="/places/new" className="create-place-button">
+        <Link 
+          to="/places/new" 
+          className="create-place-button"
+          onClick={handleCreateClick}
+        >
           Шинэ газар нэмэх
         </Link>
       </div>
