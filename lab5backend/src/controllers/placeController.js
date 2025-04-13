@@ -105,7 +105,7 @@ const deletePlace = async (req, res) => {
       return res.status(401).json({ message: 'User not authorized' });
     }
 
-    await place.remove();
+    await Place.deleteOne({ _id: req.params.id });
 
     res.json({ message: 'Place removed' });
   } catch (error) {

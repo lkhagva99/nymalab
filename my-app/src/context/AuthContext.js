@@ -1,70 +1,76 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-
+import axios from 'axios';
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState('');
-
   useEffect(() => {
     // Check if user is logged in on mount
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    const checkAuth = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (token) {
+          const response = await axios.get('http://localhost:5000/api/users/me', {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setUser(response.data);
+        }
+      } catch (err) {
+        localStorage.removeItem('token');
+        setUser(null);
+      }
+    };
+    checkAuth();
   }, []);
 
-  const register = (username, password) => {
-    // Get existing users or initialize empty array
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    
-    // Check if username already exists
-    if (users.some(user => user.username === username)) {
-      setError('Username already exists');
-      return false;
-    }
-
-    // Add new user
-    const newUser = {
-      username,
-      password, // In a real app, you should hash the password
-      createdAt: new Date().toISOString()
-    };
-    
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-    
-    // Auto login after registration
-    const userData = { username, createdAt: newUser.createdAt };
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
-    setError('');
-    return true;
-  };
-
-  const login = (username, password) => {
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = users.find(u => u.username === username && u.password === password);
-
-    if (user) {
-      const userData = { 
-        username: user.username,
-        createdAt: user.createdAt
-      };
-      localStorage.setItem('user', JSON.stringify(userData));
+  const register = async (username, password) => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/users/register', {
+        username,
+        password
+      });
+      
+      const userData = response.data;
       setUser(userData);
       setError('');
       return true;
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed');
+      return false;
     }
-    
-    setError('Invalid username or password');
-    return false;
   };
 
-  const logout = () => {
-    localStorage.removeItem('user');
-    setUser(null);
-    setError('');
+  const login = async (username, password) => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/users/login', {
+        username,
+        password
+      });
+      
+      const userData = response.data;
+      localStorage.setItem('token', userData.token);
+      setUser(userData);
+      setError('');
+      return true;
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed');
+      return false;
+    }
+  };
+
+  const logout = async () => {
+    try {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+    } catch (err) {
+      console.error('Logout error:', err);
+    } finally {
+      localStorage.removeItem('token');
+      setUser(null);
+      setError('');
+    }
   };
 
   return (

@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import './Places.css';
+import axios from 'axios';
 
 const Places = () => {
   // Get places from localStorage
-  const places = JSON.parse(localStorage.getItem('places') || '[]');
+  const [places, setPlaces] = useState([]);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -17,6 +18,13 @@ const Places = () => {
       navigate('/login', { state: { from: '/places/new' } });
     }
   };
+  useEffect(() => {
+    const fetchPlaces = async () => {
+      const response = await axios.get('http://localhost:5000/api/places');
+      setPlaces(response.data);
+    };
+    fetchPlaces();
+  }, []);
 
   return (
     <div className="places-container">
@@ -37,8 +45,8 @@ const Places = () => {
         ) : (
           places.map((place) => (
             <Link 
-              to={`/places/${place.id}`} 
-              key={place.id} 
+              to={`/places/${place._id}`} 
+              key={place._id} 
               className="place-item"
             >
               <div className="place-image">
@@ -49,7 +57,7 @@ const Places = () => {
                 <p className="place-location">{place.location}</p>
                 <p className="place-description">{place.description.substring(0, 150)}...</p>
                 <p className="place-metadata">
-                  Нэмсэн: {place.createdBy} | 
+                  Нэмсэн: {place.createdBy.username} | 
                   Огноо: {new Date(place.createdAt).toLocaleDateString()}
                 </p>
               </div>

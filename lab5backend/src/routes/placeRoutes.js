@@ -10,11 +10,11 @@ const {
 const { protect } = require('../middleware/auth');
 
 router.route('/')
-  .get(protect, getPlaces)
+  .get(getPlaces)
   .post(protect, createPlace);
 
 router.route('/:id')
-  .get(protect, getPlace)
+  .get(getPlace)
   .put(protect, updatePlace)
   .delete(protect, deletePlace);
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './CreatePlace.css'; // Reusing the same styles
+import axios from 'axios';
 
 const EditPlace = () => {
   const navigate = useNavigate();
@@ -15,26 +16,13 @@ const EditPlace = () => {
     website: ''
   });
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    // Load place data
-    const places = JSON.parse(localStorage.getItem('places') || '[]');
-    const place = places.find(p => p.id === id);
-    
-    if (!place) {
-      navigate('/places');
-      return;
-    }
-
-    // Check if user has permission to edit
-    if (place.createdBy !== user.username) {
-      navigate('/places');
-      return;
-    }
-
-    setFormData(place);
-  }, [id, navigate, user.username]);
-
+  const [place, setPlace] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const fetchPlace = async () => {
+    const response = await axios.get(`http://localhost:5000/api/places/${id}`);
+    setPlace(response.data);
+    setLoading(false);
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -75,6 +63,16 @@ const EditPlace = () => {
     navigate(`/places/${id}`);
   };
 
+  useEffect(() => {
+    fetchPlace();
+  }, [id]);
+
+  useEffect(() => {
+    if(place){
+      setFormData(place);
+    }
+  }, [place]);
+
   return (
     <div className="create-place-container">
       <h1>Газрын мэдээлэл засах</h1>
@@ -88,7 +86,7 @@ const EditPlace = () => {
             type="text"
             id="name"
             name="name"
-            value={formData.name}
+            value={formData?.name}
             onChange={handleChange}
             placeholder="Газрын нэр"
             className="form-input"
@@ -101,7 +99,7 @@ const EditPlace = () => {
             type="text"
             id="location"
             name="location"
-            value={formData.location}
+            value={formData?.location}
             onChange={handleChange}
             placeholder="Газрын байршил"
             className="form-input"
@@ -113,7 +111,7 @@ const EditPlace = () => {
           <textarea
             id="description"
             name="description"
-            value={formData.description}
+            value={formData?.description}
             onChange={handleChange}
             placeholder="Газрын тайлбар"
             className="form-input"
@@ -127,7 +125,7 @@ const EditPlace = () => {
             type="url"
             id="imageUrl"
             name="imageUrl"
-            value={formData.imageUrl}
+            value={formData?.imageUrl}
             onChange={handleChange}
             placeholder="Зургийн URL"
             className="form-input"
@@ -140,7 +138,7 @@ const EditPlace = () => {
             type="url"
             id="website"
             name="website"
-            value={formData.website}
+            value={formData?.website}
             onChange={handleChange}
             placeholder="Вэб хуудасны URL"
             className="form-input"

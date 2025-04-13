@@ -9,11 +9,11 @@ const Login = () => {
   const { login, error } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (login(username, password)) {
-      navigate('/dashboard');
+    const result = await login(username, password)
+    if (result) {
+      navigate('/');
     }
   };
 

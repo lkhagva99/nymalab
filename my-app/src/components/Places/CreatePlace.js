@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './CreatePlace.css';
-
+import axios from 'axios';
 const CreatePlace = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -23,7 +23,7 @@ const CreatePlace = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -37,17 +37,25 @@ const CreatePlace = () => {
     const newPlace = {
       id: Date.now().toString(),
       ...formData,
-      createdBy: user.username,
-      createdAt: new Date().toISOString()
+      // createdBy: user.username,
+      // createdAt: new Date().toISOString()
     };
 
     // Get existing places and add new one
-    const places = JSON.parse(localStorage.getItem('places') || '[]');
-    places.push(newPlace);
-    localStorage.setItem('places', JSON.stringify(places));
+    // const places = JSON.parse(localStorage.getItem('places') || '[]');
+    // places.push(newPlace);
+    // localStorage.setItem('places', JSON.stringify(places));
+    const token = localStorage.getItem('token');
+    const response = await axios.post('http://localhost:5000/api/places', newPlace,{
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    console.log(response.data);
 
     // Navigate to the new place's detail page
-    navigate(`/places/${newPlace.id}`);
+    navigate(`/places/${response.data._id}`);
   };
 
   return (
