@@ -5,19 +5,28 @@ import './Login.css';
 
 const Register = () => {
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [profilePictureUrl, setProfilePictureUrl] = useState('');
   const [error, setError] = useState('');
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     // Validate input
-    if (!username || !password || !confirmPassword) {
+    if (!username || !email || !password || !confirmPassword) {
       setError('Бүх талбарыг бөглөнө үү');
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Зөв и-мэйл хаяг оруулна уу');
       return;
     }
 
@@ -31,9 +40,10 @@ const Register = () => {
       return;
     }
 
-    if (register(username, password)) {
+     const result = await register(username, email, password, profilePictureUrl)
+     if (result) {
       navigate('/places');
-    }
+     }
   };
 
   return (
@@ -49,6 +59,24 @@ const Register = () => {
               placeholder="Хэрэглэгчийн нэр"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              className="login-input"
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="email"
+              placeholder="И-мэйл хаяг"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="login-input"
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="url"
+              placeholder="Профайл зургийн холбоос (заавал биш)"
+              value={profilePictureUrl}
+              onChange={(e) => setProfilePictureUrl(e.target.value)}
               className="login-input"
             />
           </div>
@@ -75,7 +103,7 @@ const Register = () => {
           </button>
         </form>
         <p className="auth-link">
-          Адь хэдийн бүртгэлтэй юу? <Link to="/login">Нэвтэрнэх</Link>
+          Аль хэдийн бүртгэлтэй юу? <Link to="/login">Нэвтрэх</Link>
         </p>
       </div>
     </div>

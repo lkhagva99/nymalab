@@ -13,7 +13,7 @@ const generateToken = (id) => {
 // @access  Public
 const registerUser = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, email, profilePictureUrl } = req.body;
 
     if (!username || !password) {
       return res.status(400).json({ message: 'Please add all fields' });
@@ -30,12 +30,16 @@ const registerUser = async (req, res) => {
     const user = await User.create({
       username,
       password,
+      email, 
+      profilePictureUrl
     });
 
     if (user) {
       res.status(201).json({
         _id: user._id,
         username: user.username,
+        email: user.email,
+        profilePictureUrl: user.profilePictureUrl,
         token: generateToken(user._id),
       });
     } else {
@@ -84,8 +88,31 @@ const getMe = async (req, res) => {
   }
 };
 
+const getUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, { username: 1, _id: 1, profilePictureUrl: 1 });
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id, { username: 1, _id: 1, profilePictureUrl: 1 });
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
 module.exports = {
   registerUser,
   loginUser,
   getMe,
+  getUsers,
+  getUserById
 }; 

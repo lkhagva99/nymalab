@@ -14,6 +14,17 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 6
   },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true
+  },
+  profilePictureUrl: {
+    type: String,
+    required: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now

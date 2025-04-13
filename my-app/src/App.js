@@ -10,6 +10,8 @@ import Places from './components/Places/Places';
 import PlaceDetail from './components/Places/PlaceDetail';
 import CreatePlace from './components/Places/CreatePlace';
 import EditPlace from './components/Places/EditPlace';
+import UserList from './components/Users/UserList';
+import UserPlaces from './components/Users/UserPlaces';
 import './App.css';
 
 // Wrapper component to handle auth logic
@@ -57,6 +59,8 @@ function App() {
               <Route path="/places/new" element={<CreatePlace />} />
               <Route path="/places/:id/edit" element={<EditPlace />} />
               <Route path="/places/:id" element={<PlaceDetail />} />
+              <Route path="/users" element={<UserList />} />
+              <Route path="/users/:userId/places" element={<UserPlaces />} />
               <Route path="/" element={<Navigate to="/places" replace />} />
             </Routes>
           </div>

@@ -16,17 +16,38 @@
   margin: 0;
 }
 
-.create-place-button {
-  background-color: #0066cc;
-  color: white;
+.header-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.create-place-button, .users-button {
   padding: 0.8rem 1.5rem;
-  border-radius: 4px;
+  border-radius: 8px;
   text-decoration: none;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.create-place-button {
+  background-color: #3498db;
+  color: white;
 }
 
 .create-place-button:hover {
-  background-color: #0052a3;
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+.users-button {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.users-button:hover {
+  background-color: #27ae60;
+  transform: translateY(-2px);
 }
 
 .places-list {
@@ -115,5 +136,21 @@
 
   .place-info {
     padding: 1rem;
+  }
+
+  .places-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .header-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .create-place-button, .users-button {
+    width: 100%;
+    text-align: center;
   }
 } 

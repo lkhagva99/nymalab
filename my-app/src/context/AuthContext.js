@@ -24,11 +24,13 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  const register = async (username, password) => {
+  const register = async (username, password, email, profilePictureUrl) => {
     try {
       const response = await axios.post('http://localhost:5000/api/users/register', {
         username,
-        password
+        password,
+        email,
+        profilePictureUrl
       });
       
       const userData = response.data;

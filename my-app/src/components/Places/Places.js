@@ -30,13 +30,21 @@ const Places = () => {
     <div className="places-container">
       <div className="places-header">
         <h1>Газрууд</h1>
-        <Link 
-          to="/places/new" 
-          className="create-place-button"
-          onClick={handleCreateClick}
-        >
-          Шинэ газар нэмэх
-        </Link>
+        <div className="header-buttons">
+          <Link 
+            to="/users" 
+            className="users-button"
+          >
+            Хэрэглэгчид
+          </Link>
+          <Link 
+            to="/places/new" 
+            className="create-place-button"
+            onClick={handleCreateClick}
+          >
+            Шинэ газар нэмэх
+          </Link>
+        </div>
       </div>
       
       <div className="places-list">

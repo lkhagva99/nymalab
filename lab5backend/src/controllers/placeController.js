@@ -1,4 +1,19 @@
 const Place = require('../models/Place');
+const User = require('../models/User');
+const getPlacesByUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    console.log(userId);
+    const places = await Place.find({ createdBy: userId })
+      .populate('createdBy', '_id')
+      .sort('-createdAt');
+    console.log(places);
+    res.json(places);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 // @desc    Get all places
 // @route   GET /api/places
@@ -120,4 +135,5 @@ module.exports = {
   createPlace,
   updatePlace,
   deletePlace,
+  getPlacesByUser
 }; 
